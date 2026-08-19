@@ -16,7 +16,7 @@ export function App() {
     const saved = localStorage.getItem('siddhi_romantic_config');
     const baseConfig = saved ? JSON.parse(saved) : defaultCoupleConfig;
 
-    // Detect URL parameter ?name=Mansi or ?to=Mansi
+    // Detect URL parameter ?name=Bhumii or ?name=Mansi or ?to=Mansi
     const params = new URLSearchParams(window.location.search);
     const nameParam = params.get('name') || params.get('to');
     const fromParam = params.get('from');
@@ -57,6 +57,8 @@ export function App() {
 
   useEffect(() => {
     localStorage.setItem('siddhi_romantic_config', JSON.stringify(config));
+    // Dynamically set browser tab title to current partner name
+    document.title = `For ${config.partner2Name} 💖 - A Special Romantic Journey`;
   }, [config]);
 
   const advanceToNextStep = (nextStepNumber: number) => {
