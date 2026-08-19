@@ -23,7 +23,8 @@ export const JigsawPuzzle: React.FC<JigsawProps> = ({ imageSrc, partnerName, onS
   const [showNumbers, setShowNumbers] = useState<boolean>(true);
   const [isEasyMode, setIsEasyMode] = useState<boolean>(true);
 
-  const resolvedImageSrc = resolveAssetUrl(imageSrc);
+  // Dynamically resolve image source for GitHub Pages / Localhost
+  const resolvedImageSrc = resolveAssetUrl(imageSrc || 'images/couple_puzzle.jpg');
 
   // Smart Easy Shuffle (guaranteed non-backtracking 4 moves away from solved state)
   const shuffleTiles = useCallback((easy: boolean = true) => {
@@ -129,7 +130,7 @@ export const JigsawPuzzle: React.FC<JigsawProps> = ({ imageSrc, partnerName, onS
     const bgX = (col / (GRID_SIZE - 1)) * 100;
     const bgY = (row / (GRID_SIZE - 1)) * 100;
     return {
-      backgroundImage: `url('${resolvedImageSrc}')`,
+      backgroundImage: `url("${resolvedImageSrc}")`,
       backgroundSize: '300% 300%',
       backgroundPosition: `${bgX}% ${bgY}%`
     };
