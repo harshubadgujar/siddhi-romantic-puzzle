@@ -39,7 +39,6 @@ export const JigsawPuzzle: React.FC<JigsawProps> = ({ imageSrc, partnerName, onS
       if (col > 0) neighbors.push(emptyIdx - 1);
       if (col < GRID_SIZE - 1) neighbors.push(emptyIdx + 1);
 
-      // Prevent immediate backtracking so every move is unique
       const validNeighbors = neighbors.filter((n) => n !== prevIdx);
       const chosenNeighbor = validNeighbors.length > 0
         ? validNeighbors[Math.floor(Math.random() * validNeighbors.length)]
@@ -69,7 +68,7 @@ export const JigsawPuzzle: React.FC<JigsawProps> = ({ imageSrc, partnerName, onS
     return true;
   };
 
-  // Handle tile slide click
+  // Handle tile slide click / touch
   const handleTileClick = (clickedIndex: number) => {
     if (isSolved) return;
 
@@ -226,7 +225,7 @@ export const JigsawPuzzle: React.FC<JigsawProps> = ({ imageSrc, partnerName, onS
         </AnimatePresence>
 
         {/* 3x3 SLIDING JIGSAW PUZZLE GRID */}
-        <div className="relative w-full aspect-square grid grid-cols-3 gap-2 p-2.5 bg-slate-950/90 rounded-2xl border border-rose-500/30 shadow-inner overflow-hidden">
+        <div className="relative w-full aspect-square grid grid-cols-3 gap-2 p-2.5 bg-slate-950/90 rounded-2xl border border-rose-500/30 shadow-inner overflow-hidden select-none">
           {tiles.map((tileVal, idx) => {
             const isBlank = tileVal === TOTAL_TILES - 1 && !isSolved;
             const isClickable = !isSolved && !isBlank;
@@ -237,18 +236,23 @@ export const JigsawPuzzle: React.FC<JigsawProps> = ({ imageSrc, partnerName, onS
                 layout
                 transition={{ type: 'spring', stiffness: 320, damping: 24 }}
                 onClick={() => handleTileClick(idx)}
+                onTouchEnd={(e) => {
+                  e.preventDefault();
+                  handleTileClick(idx);
+                }}
                 disabled={!isClickable}
-                className={`relative w-full h-full rounded-xl overflow-hidden border transition-all ${
+                className={`relative w-full h-full rounded-xl overflow-hidden border transition-all touch-manipulation select-none ${
                   isBlank
                     ? 'border-dashed border-rose-500/20 bg-transparent'
                     : 'border-rose-300/40 shadow-md cursor-pointer hover:border-rose-400 active:scale-95 ring-1 ring-white/10'
                 }`}
                 style={{
+                  touchAction: 'manipulation',
                   boxShadow: !isBlank ? 'inset 0 0 10px rgba(0,0,0,0.3), 0 4px 6px rgba(0,0,0,0.2)' : 'none'
                 }}
               >
                 {!isBlank && (
-                  <div className="relative w-full h-full">
+                  <div className="relative w-full h-full pointer-events-none">
                     {/* Jigsaw Tile Image */}
                     <div
                       className="w-full h-full bg-cover"
@@ -260,7 +264,7 @@ export const JigsawPuzzle: React.FC<JigsawProps> = ({ imageSrc, partnerName, onS
 
                     {/* Tile Number Helper Badge */}
                     {showNumbers && (
-                      <div className="absolute top-1 left-1 w-5 h-5 rounded-full bg-slate-950/80 backdrop-blur-md text-[11px] font-bold text-pink-200 border border-pink-400/40 flex items-center justify-center shadow">
+                      <div className="absolute top-1 left-1 w-5 h-5 rounded-full bg-slate-950/80 backdrop-blur-md text-[11px] font-bold text-pink-200 border border-pink-400/40 flex items-center justify-center shadow pointer-events-none">
                         {tileVal + 1}
                       </div>
                     )}
@@ -288,7 +292,7 @@ export const JigsawPuzzle: React.FC<JigsawProps> = ({ imageSrc, partnerName, onS
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={onSolveComplete}
-                className="w-full py-3 rounded-xl bg-gradient-to-r from-rose-500 to-pink-500 text-white font-semibold shadow-lg shadow-pink-500/30 flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-3 rounded-xl bg-gradient-to-r from-rose-500 to-pink-500 text-white font-semibold shadow-lg shadow-pink-500/30 flex items-center justify-center gap-2 cursor-pointer touch-manipulation"
               >
                 <span>Wanna join the journey with me?</span>
                 <ArrowDown className="w-4 h-4 animate-bounce" />

@@ -10,6 +10,7 @@ import { StoryScroll } from './components/StoryScroll';
 import { ProposalSection } from './components/ProposalSection';
 import { LoveLetterModal } from './components/LoveLetterModal';
 import { CustomizerModal } from './components/CustomizerModal';
+import { soundFx } from './utils/soundEffects';
 
 export function App() {
   const [config, setConfig] = useState<CoupleConfig>(() => {
@@ -57,8 +58,10 @@ export function App() {
 
   useEffect(() => {
     localStorage.setItem('siddhi_romantic_config', JSON.stringify(config));
-    // Dynamically set browser tab title to current partner name
     document.title = `For ${config.partner2Name} 💖 - A Special Romantic Journey`;
+    
+    // Bind mobile touch audio unlock listener
+    soundFx.bindMobileTouchUnlock();
   }, [config]);
 
   const advanceToNextStep = (nextStepNumber: number) => {

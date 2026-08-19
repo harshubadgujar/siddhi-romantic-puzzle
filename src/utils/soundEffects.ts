@@ -1,11 +1,12 @@
-// Audio Engine loading First Full-Length Audio Track of "Until I Found You" (Stephen Sanchez)
-// Starts directly at the main chorus / mukhda ("I would never fall in love again until I found her...")
+// Web Audio API Synthesizer & Audio Engine for "Until I Found You" (Stephen Sanchez)
+// Optimized for Mobile Safari (iOS) and Mobile Chrome (Android) with gesture unlocking!
 
 class SoundEngine {
   private ctx: AudioContext | null = null;
   private isMuted: boolean = false;
   private musicInterval: number | null = null;
   private audioEle: HTMLAudioElement | null = null;
+  private touchListenerBound: boolean = false;
 
   private initCtx() {
     if (!this.ctx) {
@@ -15,6 +16,23 @@ class SoundEngine {
     if (this.ctx.state === 'suspended') {
       this.ctx.resume();
     }
+  }
+
+  public bindMobileTouchUnlock() {
+    if (this.touchListenerBound) return;
+    this.touchListenerBound = true;
+
+    const unlockHandler = () => {
+      this.initCtx();
+      if (!this.isMuted) {
+        this.startRomanticMusic();
+      }
+      window.removeEventListener('touchstart', unlockHandler);
+      window.removeEventListener('click', unlockHandler);
+    };
+
+    window.addEventListener('touchstart', unlockHandler, { once: true });
+    window.addEventListener('click', unlockHandler, { once: true });
   }
 
   public playClick() {
@@ -90,26 +108,32 @@ class SoundEngine {
     } catch {}
   }
 
-  // Play First Full-Length Audio Track starting directly at Main Chorus / Kadva
+  // Play Original Full-Length Audio Track starting directly at Main Chorus / Kadva
   public startRomanticMusic() {
     if (this.isMuted) return;
     this.initCtx();
 
     if (!this.audioEle) {
-      this.audioEle = new Audio('/audio/until_i_found_you.m4a');
+      this.audioEle = new Audio('./audio/until_i_found_you.m4a');
       this.audioEle.loop = true;
       this.audioEle.volume = 0.8;
     }
 
     // Jump directly to main chorus / kadva (35s timestamp: "I would never fall in love again until I found her...")
     if (this.audioEle.currentTime < 5) {
-      this.audioEle.currentTime = 35;
+      try {
+        this.audioEle.currentTime = 35;
+      } catch {}
     }
 
     const playResult = this.audioEle.play();
     if (playResult !== undefined) {
       playResult.catch(() => {
-        this.startSynthesizedMelody();
+        // Retry with mp3 or synthesizer if mobile autoplay policy blocks
+        this.audioEle = new Audio('./audio/until_i_found_you.mp3');
+        this.audioEle.loop = true;
+        this.audioEle.volume = 0.75;
+        this.audioEle.play().catch(() => this.startSynthesizedMelody());
       });
     }
   }
