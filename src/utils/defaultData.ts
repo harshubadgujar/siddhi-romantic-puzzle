@@ -1,4 +1,5 @@
 import type { CoupleConfig } from '../types';
+import { resolveAssetUrl } from './assetResolver';
 
 export const defaultCoupleConfig: CoupleConfig = {
   partner1Name: 'You',
@@ -7,7 +8,7 @@ export const defaultCoupleConfig: CoupleConfig = {
   heroQuote1: 'Some people search their whole lives for what I found the moment I met you',
   heroQuote2: "I made you a little puzzle... because you're the missing piece I never knew I needed",
   heroQuote3: 'Solve it, and let me take you on a journey ✨',
-  puzzleImage: '/images/couple_puzzle.jpg',
+  puzzleImage: resolveAssetUrl('images/couple_puzzle.jpg'),
   storySlides: [
     {
       title: 'Hey Siddhi...',

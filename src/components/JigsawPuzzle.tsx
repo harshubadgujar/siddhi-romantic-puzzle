@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { RefreshCw, Eye, Sparkles, Heart, ArrowDown, Wand2, Hash, Smile } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { soundFx } from '../utils/soundEffects';
+import { resolveAssetUrl } from '../utils/assetResolver';
 
 interface JigsawProps {
   imageSrc: string;
@@ -19,8 +20,10 @@ export const JigsawPuzzle: React.FC<JigsawProps> = ({ imageSrc, partnerName, onS
   const [moves, setMoves] = useState<number>(0);
   const [isSolved, setIsSolved] = useState<boolean>(false);
   const [showPreview, setShowPreview] = useState<boolean>(false);
-  const [showNumbers, setShowNumbers] = useState<boolean>(true); // Default ON for easy solving
-  const [isEasyMode, setIsEasyMode] = useState<boolean>(true); // Default Easy Mode (3-4 moves away)
+  const [showNumbers, setShowNumbers] = useState<boolean>(true);
+  const [isEasyMode, setIsEasyMode] = useState<boolean>(true);
+
+  const resolvedImageSrc = resolveAssetUrl(imageSrc);
 
   // Smart Easy Shuffle (guaranteed non-backtracking 4 moves away from solved state)
   const shuffleTiles = useCallback((easy: boolean = true) => {
@@ -126,7 +129,7 @@ export const JigsawPuzzle: React.FC<JigsawProps> = ({ imageSrc, partnerName, onS
     const bgX = (col / (GRID_SIZE - 1)) * 100;
     const bgY = (row / (GRID_SIZE - 1)) * 100;
     return {
-      backgroundImage: `url('${imageSrc}')`,
+      backgroundImage: `url('${resolvedImageSrc}')`,
       backgroundSize: '300% 300%',
       backgroundPosition: `${bgX}% ${bgY}%`
     };
@@ -219,7 +222,7 @@ export const JigsawPuzzle: React.FC<JigsawProps> = ({ imageSrc, partnerName, onS
               exit={{ opacity: 0, scale: 0.9 }}
               className="relative w-full aspect-square mb-4 rounded-2xl overflow-hidden border-2 border-rose-400/40 shadow-lg"
             >
-              <img src={imageSrc} alt="Preview" className="w-full h-full object-cover" />
+              <img src={resolvedImageSrc} alt="Preview" className="w-full h-full object-cover" />
             </motion.div>
           )}
         </AnimatePresence>

@@ -1,5 +1,7 @@
 // Web Audio API Synthesizer & Audio Engine for "Until I Found You" (Stephen Sanchez)
-// Optimized for Mobile Safari (iOS) and Mobile Chrome (Android) with gesture unlocking!
+// Optimized for Mobile Safari (iOS) and Mobile Chrome (Android) with relative asset path resolution!
+
+import { resolveAssetUrl } from './assetResolver';
 
 class SoundEngine {
   private ctx: AudioContext | null = null;
@@ -114,7 +116,8 @@ class SoundEngine {
     this.initCtx();
 
     if (!this.audioEle) {
-      this.audioEle = new Audio('./audio/until_i_found_you.m4a');
+      const audioUrl = resolveAssetUrl('audio/until_i_found_you.m4a');
+      this.audioEle = new Audio(audioUrl);
       this.audioEle.loop = true;
       this.audioEle.volume = 0.8;
     }
@@ -130,7 +133,8 @@ class SoundEngine {
     if (playResult !== undefined) {
       playResult.catch(() => {
         // Retry with mp3 or synthesizer if mobile autoplay policy blocks
-        this.audioEle = new Audio('./audio/until_i_found_you.mp3');
+        const mp3Url = resolveAssetUrl('audio/until_i_found_you.mp3');
+        this.audioEle = new Audio(mp3Url);
         this.audioEle.loop = true;
         this.audioEle.volume = 0.75;
         this.audioEle.play().catch(() => this.startSynthesizedMelody());

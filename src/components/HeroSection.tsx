@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Heart, Sparkles, ChevronDown } from 'lucide-react';
 import type { CoupleConfig } from '../types';
 import { soundFx } from '../utils/soundEffects';
+import { resolveAssetUrl } from '../utils/assetResolver';
 
 interface HeroProps {
   config: CoupleConfig;
@@ -21,7 +22,7 @@ export const HeroSection: React.FC<HeroProps> = ({ config, onStart }) => {
       {/* Background Image with Ambient Glow overlay */}
       <div 
         className="absolute inset-0 bg-cover bg-center transition-all duration-1000 scale-105"
-        style={{ backgroundImage: `url('/images/sunset_bg.jpg')` }}
+        style={{ backgroundImage: `url('${resolveAssetUrl('images/sunset_bg.jpg')}')` }}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950/60 via-rose-950/40 to-slate-950/90" />
       </div>
